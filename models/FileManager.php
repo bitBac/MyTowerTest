@@ -37,7 +37,7 @@ class FileManager
 		if ($this->extension == 'txt' || $this->extension == 'csv') {
 			return true;
 		} else {
-			$validation_errors[] = 'File is not CSV!';
+			$this->validation_errors[] = 'File is not CSV!';
 		}
 
 		return false;
