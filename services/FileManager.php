@@ -6,8 +6,10 @@
  * Time: 13:44
  */
 
-namespace models;
+namespace services;
 
+
+use models\Call;
 
 class FileManager
 {
@@ -55,5 +57,30 @@ class FileManager
 	public function getValidationErrors()
 	{
 		return $this->validation_errors;
+	}
+
+	/**
+	 * @return Call[]
+	 */
+	public function extractData()
+	{
+		$csv = file_get_contents($this->path);
+		$array = array_map("str_getcsv", explode("\n", $csv));
+		$calls_models = [];
+
+		foreach ($array as $call_info) {
+			$call = new Call();
+			$call->setCustomerId((int)$call_info[0]);
+			$call->setDate($call_info[1]);
+			$call->setDuration((int)$call_info[2]);
+			$call->setPhoneNumber($call_info[3]);
+			$call->setCustomerIp($call_info[4]);
+
+			if ($call->validate()) {
+				$calls_models[] = $call;
+			}
+		}
+
+		return $calls_models;
 	}
 }

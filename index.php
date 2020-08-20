@@ -1,8 +1,7 @@
 <?php
 
-use models\Helper;
-use models\Parser;
-use models\FileManager;
+use services\Helper;
+use services\FileManager;
 
 define('BASE_DIR', __DIR__);
 
@@ -18,8 +17,9 @@ if(isset($_FILES["fileToUpload"])){
 	$file = new FileManager($_FILES["fileToUpload"]);
 
 	if($file->validate()){
-		$data = Parser::csvToArray($file->path, "\n");
-		$results = Helper::getResults($data);
+		$calls = $file->extractData();
+		$helper = new Helper();
+		$results = $helper->getResults($calls);
 	}else{
 		var_dump($file->getValidationErrors());
 	}
@@ -27,5 +27,4 @@ if(isset($_FILES["fileToUpload"])){
 }
 
 require_once BASE_DIR . '/views/home.php';
-?>
 
